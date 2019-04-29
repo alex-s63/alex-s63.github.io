@@ -1,4 +1,8 @@
 module.exports = {
+	baseUrl: "./",
+	css: {
+		extract: false
+	},
 	chainWebpack: config => {
 		config
 			.plugin("html")
