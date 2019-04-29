@@ -3,25 +3,30 @@
 	<div>
 		<el-container class="container">
 			<el-aside width="250px">
-				<product-filter :products="products"></product-filter>
+				<product-filter ref="filter" :products="products"></product-filter>
 			</el-aside>
 			<el-main class="content">
+				<div class="found-products">Products: <span>{{filteredList.length}}</span></div>
 				<div class="product-list">
 					<div v-for="product in paginatedList" :key="product.name" class="product-item">
 						<product-item :product="product"></product-item>
 					</div>
 				</div>
 
-				<div class="right-container">
+				<div class="center-container">
 					<el-pagination
+							v-if="filteredList.length"
 							background
 							layout="total, prev, pager, next"
 							@current-change="pageChanged"
 							:current-page="parseInt($route.params.page)"
 							:page-size="pageSize"
-							:total="filteredList.length"
 							:page-count="pagesTotal">
 					</el-pagination>
+					<div class="no-products" v-else>
+						<div class="message">No products found. Try to reset filter</div>
+						<el-button @click="resetFilters" type="danger">Reset</el-button>
+					</div>
 				</div>
 			</el-main>
 		</el-container>
@@ -31,8 +36,24 @@
 
 <!-- SCOPED STYLE -->
 <style lang="scss" scoped>
-	.right-container{
-		text-align: right;
+	.center-container{
+		text-align: center;
+	}
+	.no-products{
+
+		.message{
+			color: #999;
+			margin-bottom: 20px;
+		}
+	}
+	.found-products{
+		margin-bottom: 20px;
+		color: #797878;
+
+		span{
+			font-weight: 600;
+			color: #409EFF;
+		}
 	}
 </style>
 
@@ -108,13 +129,16 @@
 				}) : filteredByName;
 
 				/** Filter result by brand */
-				const filteredByBrand = this.$route.query.brands ? filteredByPrice.filter((product)=>{
+				const filteredByBrand = this.$route.query.brands && this.$route.query.brands.length ? filteredByPrice.filter((product)=>{
 					return this.$route.query.brands.indexOf(product.brand) != -1
 				}) : filteredByPrice;
 
 				/** Set result */
 				this.filteredList = filteredByBrand
 			},
+			resetFilters(){
+				this.$refs.filter.resetFilters();
+			}
 		}
 	}
 </script>

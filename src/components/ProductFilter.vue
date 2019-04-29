@@ -147,6 +147,14 @@
 				this.$router.push({params: {page: '1'}, query: query})
 			},
 			resetFilters(){
+				/** Reset fields */
+				this.search = '';
+				this.price = [];
+				this.price.push(this.priceRange.min); //push for reactivity
+				this.price.push(this.priceRange.max);
+				this.brands = [];
+
+				/** Reset queries */
 				this.$router.push({query: {}})
 			}
 		}
